@@ -1,0 +1,172 @@
+﻿@model Undisclosed_Shop.VeiwModels.ShoppingCartViewModel
+@{
+    ViewBag.Title = "Shopping Cart";
+}
+
+<style>
+    body {
+        margin-left: 40px;
+        margin-right: 40px;
+    }
+</style>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script type="text/javascript">$(function () {
+        // Document.ready -> link up remove event handler
+        $(".RemoveLink").click(function () {
+            // Get the id from the link
+            var recordToDelete = $(this).attr("data-id");
+            if (recordToDelete != '') {
+                // Perform the ajax post
+                $.post("/ShoppingCart/RemoveFromCart", { "id": recordToDelete },
+                    function (data) {
+                        // Successful requests get here
+                        // Update the page elements
+                        if (data.ItemCount == 0) {
+                            $('#row-' + data.DeleteId).fadeOut('slow');
+                        } else {
+                            $('#item-count-' + data.DeleteId).text(data.ItemCount);
+                        }
+                        $('#cart-total').text(data.CartTotal);
+                        $('#update-message').text(data.Message);
+                        $('#cart-status').text(data.CartCount);
+                    });
+            }
+        });
+    });</script>
+<h3 class="text-center text-success">
+    <em>Review</em> your cart:
+</h3>
+
+
+
+@{
+
+    if (Model.CartItems.Count > 0)
+    {
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h3 class="panel-title">Order Summary</h3>
+            </div>
+            <div class="panel-body">
+
+                <div id="update-message">
+                </div>
+                <table class="table table-striped table-hover ">
+                    <thead>
+                        <tr>
+                            <th>
+                                Products:
+                            </th>
+                            <th>
+                                Price:
+                            </th>
+                            <th>
+                                Quantity:
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    @foreach (var item in Model.CartItems)
+                    {
+                        <tr id="row-@item.ProductId">
+                            <td class="pro-field">
+                                @Html.ActionLink(item.Products.ProductName, "Details", "Products", new { id = item.ProductId, @class = "pro-field" }, null)
+                            </td>
+                            <td>
+                                &#82;@item.Products.ProductPrice
+                            </td>
+                            <td id="item-count-@item.ProductId">
+                                @item.Count
+                            </td>
+                            <td class="remove-cart">
+                                <a href="~/ShoppingCart" class="RemoveLink"
+                                   data-id="@item.ProductId">
+                                    Remove
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                    <tr>
+                        <td>
+                            Total
+                        </td>
+                        <td></td>
+                        <td></td>
+                        <td id="cart-total">
+                            &#82;@Model.CartTotal
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Shipping Fee
+                        </td>
+                        <td></td>
+                        <td></td>
+                        <td id="cart-total">
+                            &#82;@ViewBag.ShippingCost
+                        </td>
+                    </tr>
+                    @if (ViewBag.Discount != null)
+                    {
+                        <tr>
+                            <td>
+                                Discount for total
+                            </td>
+                            <td></td>
+                            <td></td>
+                            <td id="cart-total">
+                                @ViewBag.Discount%
+                            </td>
+                        </tr>
+                    }
+                    <tr>
+                        <td>
+                            Total Including Shipping
+                        </td>
+                        <td></td>
+                        <td></td>
+                        <td id="cart-total">
+                            <strong>&#82;@ViewBag.TotalCost</strong>
+                        </td>
+                    </tr>
+
+
+
+                    <tfoot>Please ensure that all products in cart are correct before checking out.</tfoot>
+                </table>
+
+                @TempData["Result"]
+
+                <button type="button" style="color:black; margin-bottom:10px; cursor:pointer;" class="dropbtn" onclick="location.href='@Url.Action("Payment", "Checkout")'">
+                    Confirm and Pay &#82;@ViewBag.TotalCost
+                </button>
+                <button type="button" style="color:black; margin-bottom:10px; cursor:pointer;" class="dropbtn" onclick="location.href='@Url.Action("Create", "UsedCouponLists")'">
+                    Enter coupon
+                </button>
+            </div>
+        </div>
+
+    }
+    else
+    {
+        <div>
+            <p>
+                There are no items in your cart currently. Please shop for something and add items..
+            </p>
+        </div>
+    }
+}
+<style>
+    .pro-field a {
+        color: black;
+        font-weight: bold;
+    }
+
+    .remove-cart a {
+        color: white;
+        padding: 4px 10px;
+        background: red;
+        border-radius: 2px;
+    }
+</style> 

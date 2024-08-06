@@ -1,0 +1,61 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+    Layout = "~/Views/Shared/_LayoutLogin.cshtml";
+}
+
+
+<main>
+    <style>
+        .panel {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translateX(-50%) translateY(-50%);
+        }
+
+        .container {
+            padding-top: 150px;
+        }
+
+        #loginLink {
+            width: 150px; /* Adjust the width as needed */
+            height: 50px; /* Adjust the height as needed */
+            font-size: 26px; /* Adjust the font size as needed */
+            margin-top: 9px;
+        }
+
+        #registerLink {
+            width: 150px; /* Adjust the width as needed */
+            height: 50px; /* Adjust the height as needed */
+            font-size: 26px; /* Adjust the font size as needed */
+            margin-top: 9px;
+        }
+
+    </style>
+
+
+    <div class="container body-content">
+        <div class="panel panel-default col-md-6">
+            <h1><div class="panel-title text-center">Welcome To the Undisclosed Store</div></h1>
+            <div class="panel-body text-center">
+
+
+                <ul>
+                    <tr>
+                        <div type="button" class="btn header-item">
+                            @Html.ActionLink("Log in", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink", @class = "btn header-item" })
+                        </div>
+                    </tr>
+                    <tr>
+                        <div type="button" class="btn header-item">
+                            @Html.ActionLink("Register", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink", @class = "btn header-itemk" })
+                        </div>
+                    </tr>
+                </ul>
+
+
+            </div>
+        </div>
+    </div>
+
+</main>

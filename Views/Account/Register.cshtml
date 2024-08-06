@@ -1,0 +1,181 @@
+﻿@model Undisclosed_Shop.Models.RegisterViewModel
+@{
+    ViewBag.Title = "Register";
+    Layout = "~/Views/Shared/_LayoutLogin.cshtml";
+}
+<a href="~/Views/Shared/_LayoutLogin.cshtml"></a>
+<h2 style="color:black">@ViewBag.Title.</h2>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<style>
+
+    .dropbtn {
+        height: 2.0rem;
+        padding: 0 1rem;
+        border-radius: 0.9rem;
+        background: linear-gradient( -45deg, #d0a772, #e8b779, #fcc072 );
+        background-size: 400%;
+        background-position: 90% 0;
+        color: #d0a772;
+        transition: background 0.8s;
+        border: hidden;
+    }
+
+        .dropbtn:hover {
+            background-position: 185% 50%;
+        }
+
+        .dropbtn:hover, .dropbtn:focus {
+            background-color: #d0a772;
+        }
+
+    .AddLinkTab {
+        height: 4.5rem;
+        padding: 0 1rem;
+        border-radius: 0.375rem;
+        /* background: #d0a772;*/
+        background-color: blueviolet;
+        box-shadow: 0 0.4rem 0 0 #cda5f3;
+        letter-spacing: 3px;
+        transition: all 0.3s;
+        margin-top: 0px;
+        width: fit-content;
+        height: fit-content;
+    }
+
+        .AddLinkTab:active {
+            transform: translate(0.3rem);
+            box-shadow: 0 0.2rem 0 0 #f5d8b3;
+        }
+</style>
+
+<body style="font-size:125%;padding-left:20px">
+    @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+    {
+
+        @Html.AntiForgeryToken()
+        <h4>Create a new account.</h4>
+        <hr />
+        @Html.ValidationSummary("", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(m => m.Email, new { @class = "col-md-2 control-label" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.Password, new { @class = "col-md-2 control-label" })
+            <div class="col-md-10">
+                @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.ConfirmPassword, new { @class = "col-md-2 control-label" })
+            <div class="col-md-10">
+                @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.Name, new { @class = "col-md-2 control-label" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.Address, new { @class = "col-md-2 control-label" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.Address, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.City, new { @class = "col-md-2 control-label" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.City, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.State, new { @class = "col-md-2 control-label" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.State, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.PostalCode, new { @class = "col-md-2 control-label" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.PostalCode, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.Country, new { @class = "col-md-2 control-label" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.Country, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.PhoneNo, new { @class = "col-md-2 control-label" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.PhoneNo, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input style="border:none;color:black;cursor:pointer" type="submit" class="AddLinkTab" value="Register" />
+                </div>
+            </div>
+
+
+        }
+
+        <p class="btn btn-lg btn-circle btn-outline-new-white">
+            @Html.ActionLink("Already have an account", "Login")
+        </p>
+
+
+
+        <p class="btn btn-lg btn-circle btn-outline-new-white">
+            @Html.ActionLink("Already have an account", "Login")
+        </p>
+
+        <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCmVZBqrUwujwLYjips81ipviQDB1NKyP0&libraries=places"></script>
+        <script type="text/javascript">
+            debugger
+            google.maps.event.addDomListener(window, 'load', function () {
+                var places = new google.maps.places.Autocomplete(document.getElementById('Address'));
+                google.maps.event.addListener(places, 'place_changed', function () {
+
+
+                    var place = places.getPlace();
+                    document.getElementById('Address').value = place.formatted_address;
+
+
+                    var componentForm = {
+                        street_number: 'short_name',
+                        route: 'long_name',
+                        locality: 'long_name',
+                        administrative_area_level_1: 'short_name',
+                        country: 'long_name',
+                        postal_code: 'short_name'
+                    };
+
+                    var addressObj = {}
+
+                    for (var i = 0; i < place.address_components.length; i++) {
+                        var addressType = place.address_components[i].types[0];
+                        if (componentForm[addressType]) {
+                            addressObj[addressType] = place.address_components[i][componentForm[addressType]]
+                        }
+                    }
+
+                    document.getElementById('City').value = addressObj.locality;
+                    document.getElementById('State').value = addressObj.administrative_area_level_1;
+                    document.getElementById('PostalCode').value = addressObj.postal_code;
+                    document.getElementById('Country').value = addressObj.country;
+
+                });
+            });</script>
+
+    </body>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

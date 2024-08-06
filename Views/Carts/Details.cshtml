@@ -1,0 +1,58 @@
+﻿@model Undisclosed_Shop.Models.Cart
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Details</title>
+</head>
+<body>
+    <div>
+        <h4>Cart</h4>
+        <hr />
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.Products.ProductName)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.Products.ProductName)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.CartId)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.CartId)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.Count)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.Count)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.DateCreated)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.DateCreated)
+            </dd>
+    
+        </dl>
+    </div>
+    <p>
+        @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
+        @Html.ActionLink("Back to List", "Index")
+    </p>
+</body>
+</html>

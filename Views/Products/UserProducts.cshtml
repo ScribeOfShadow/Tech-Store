@@ -1,0 +1,158 @@
+﻿@model PagedList.IPagedList<Undisclosed_Shop.Models.Products>
+@using PagedList.Mvc
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+<link href="~/Content/PagedList.css" rel="stylesheet" />
+<link href="~/Content/themeassets/css/UserProduct.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" />
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!DOCTYPE html>
+
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>UserProducts</title>
+</head>
+
+<style>
+    .fa-heart {
+        background-color: #8a2be2;
+    }
+
+    .scrollable-container {
+        overflow-y: auto;
+        height: 100vh; /* Set the height to fill the viewport */
+        padding: 20px; /* Add padding as needed */
+    }
+</style>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".AddLink").click(function (event) {
+            event.preventDefault(); // Prevent the default action of the anchor tag
+
+            var productId = $(this).data("id"); // Get the product ID from the data-id attribute
+
+            $.post("/ShoppingCart/AddToCart", { id: productId })
+                .done(function (data) {
+                    $('#cart-status').text(data.CartCount); // Update cart count
+                })
+                .fail(function (xhr, status, error) {
+                    console.error(xhr.responseText); // Log any errors to the console
+                });
+        });
+    });
+</script>
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+
+    <div aria-hidden="true" class="alert alert-dismissable alert-success">
+        <button type="button" class="close" data-dismiss="alert">×</button>
+        <strong>An item was added to your cart.</strong> To check out now simply <a href="#" class="alert-link">click here</a>.
+    </div>
+
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                @*<h4 class="modal-title">Confirm check out.</h4>*@
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to checkout?</p>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Keep Shopping</button>
+                <button type="submit" class="btn btn-primary" onclick="location.href='@Url.Action("Index", "ShoppingCart")'">Check Out</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<body>
+    <div class="scrollable-container">
+        @if (Model != null && Model.Any())
+        {
+            foreach (var item in Model)
+            {
+                <div class="card1-columns px-3">
+                    @{
+
+                        ViewBag.ProductId = item.ProductId;
+                        ViewBag.ProductName = item.ProductName;
+
+
+                    }
+
+                    <div class="column1 d-flex justify-content-center p-3">
+                        <div class="grid1-container px-4" style="box-shadow: 0 4px 3px black; background:rgb(245, 245, 245);border-radius:4px">
+                            <div class="grid1-item">
+
+                                <div class="card1 .center">
+                                    <div class="card1-img .center">
+                                        <img src="@Url.Content("~/ProductImages/" + item.ProductImage)"
+                                             style="width:300px; height:300px; margin:0px; padding:10px" alt="no photo" class="adsm-image; center-url" />
+                                    </div>
+
+                                    <div class="card1-body">
+                                        <h4 class="card1-title">Name: <span class="card-value">@item.ProductName</span> </h4>
+                                    </div>
+
+                                    <div class="card1-body">
+                                        <h4 class="card1-title">Price: <span class="card-value">R @item.ProductPrice</span></h4>
+                                    </div>
+                                    <div class="card1-body d-flex justify-content-center">
+                                        <div class="d-flex p-0 pb-1">
+                                            @* <span class="m-0 p-0" style="cursor: pointer" id="IncrsQty" onclick="IncrsQty()">
+                    <i class="fa fa-plus"></i>
+                </span>*@ @*if (item.ProductCategory != 11)
+                {
+                    <h4 class="m-0 p-0 mx-3" id="quantity">Available Currently<span class="card-value"> @item.ProductStock </span></h4>
+                }*@
+                                @*<span class="m-0 p-0" id="DecrsQty" onclick="DecrsQty()">
+        <i class="fa fa-minus" style="cursor: pointer"></i>
+    </span>*@
+                                </div>
+                                </div>
+
+                                <div class="card1-footer">
+                                    <div class="dropdown">
+
+                                        <input type="button" id="btnShowMore" class="dropbtn" onclick="showDesFunction('@item.ProductDescription')" value="Show More">
+                                        <div id="Textbox" class="dropdown-content">
+
+
+                                        </div>
+
+                                    </div>
+                                </div>
+
+
+                                <div class="d-flex justify-content-center pt-2">
+                                    <a href="#" class="AddLink AddLinkTab" data-id="@item.ProductId" data-toggle="modal" data-target="#myModal">
+                                        <i class="fa fa-cart-plus" aria-hidden="true"></i>
+                                    </a>
+                                </div>
+
+                                @using (Html.BeginForm("Create", "SavedProducts", FormMethod.Post))
+                                {
+                                    @Html.Hidden("ProductId", (object)ViewBag.ProductId)
+                                    @Html.Hidden("ProductName", (object)ViewBag.ProductName)
+
+                                    <button type="submit" class="fa fa-heart" value="Submit"></button>
+                                }
+
+                                </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                }
+            }
+    </div>
+</body>
+

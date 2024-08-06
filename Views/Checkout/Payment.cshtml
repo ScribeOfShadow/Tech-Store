@@ -1,0 +1,192 @@
+﻿@model Undisclosed_Shop.VeiwModels.ShoppingCartViewModel
+@using Undisclosed_Shop.Models
+@{
+    ViewBag.Title = "Shopping Cart";
+}
+<link href="~/Styles/StyleSheet3.css" rel="stylesheet" type="text/css" />
+<style>
+    .lable {
+        color: black;
+    }
+    
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        //   $("#AddNewBankDetails").hide();
+        var AddBankDets = document.getElementById("AddNewBankDetails");
+        AddBankDets.style.display = 'none';
+    });
+    $(function () {
+        // Document.ready -> link up remove event handler
+        $(".RemoveLink").click(function () {
+            // Get the id from the link
+            var recordToDelete = $(this).attr("data-id");
+            if (recordToDelete != '') {
+                // Perform the ajax post
+                $.post("/ShoppingCart/RemoveFromCart", { "id": recordToDelete },
+                    function (data) {
+                        // Successful requests get here
+                        // Update the page elements
+                        if (data.ItemCount == 0) {
+                            $('#row-' + data.DeleteId).fadeOut('slow');
+                        } else {
+                            $('#item-count-' + data.DeleteId).text(data.ItemCount);
+                        }
+                        $('#cart-total').text(data.CartTotal);
+                        $('#update-message').text(data.Message);
+                        $('#cart-status').text(data.CartCount);
+                    });
+            }
+        });
+    });
+
+    function CheckValueOBankDetails() {
+        debugger;
+        let Result = document.getElementById("PaymentMethodId").value;
+        if (Result === "-1") {
+            var AddBankDets = document.getElementById("AddNewBankDetails");
+            AddBankDets.style.display = 'none';
+        } else {
+            $.post("/Checkout/CheckPaymentMethod", { "id": Result },
+                function (data) {
+                    debugger;
+                    // Successful requests get here
+                    if (data == true) {
+                        var AddBankDets = document.getElementById("AddNewBankDetails");
+                        AddBankDets.style.display = 'block';
+                    } else {
+                        var AddBankDets = document.getElementById("AddNewBankDetails");
+                        AddBankDets.style.display = 'none';
+                    }
+
+
+
+
+                });
+        }
+    }
+    function AddBankDetailsToThing() {
+        debugger;
+        var AddBankDets = document.getElementById("AddNewBankDetails");
+        var GetBankinfId = document.getElementById("AddNewBankDetailsList").value;
+
+        $.post("/Checkout/GetBankResult", { "id": GetBankinfId },
+            function (data) {
+                // Successful requests get here
+                debugger;
+                // Update the page elements
+                if (data != null) {
+                    AddBankDets.style.display = 'block';
+                    document.getElementById("BanksinfoID").value = data.id;
+                    document.getElementById("Cardnos").value = data.CardNo;
+
+                    document.getElementById("CCVS").value = data.CCV;
+                    document.getElementById("expDate").value = data.ExpDate;
+                    document.getElementById("BankId").value = data.BankId;
+                    document.getElementById("BanksinfoID").value = data.BankId;;
+                }
+
+
+
+
+            });
+    }</script>
+<h3 class="text-center text-success">
+    <em>Review</em> your cart:
+</h3>
+
+
+@using (Html.BeginForm())
+{
+    <div class="form-horizontal">
+        <h4>PaymentMethod</h4>
+        <hr />
+        <div class="form-group">
+            <label class="lable">Select Payment Method</label>
+            <div class="col-md-2" style="left: 224px; width: 684px;">
+                @Html.DropDownListFor(model => model.PaymentMethodId, InfoHelper.GetPaymentMethods(), new { @class = "form-control col-md-8", @id = "PaymentMethodId", @onchange = "CheckValueOBankDetails();" })
+
+
+            </div>
+        </div>
+
+
+
+
+
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+
+        <div id="AddNewBankDetails">
+            <div class="form-group">
+                <label class="lable">Select Banking Info To pay with (Optional)*</label>
+                <div class="col-md-2" style="left: 224px; width: 684px;">
+                    @Html.DropDownListFor(model => model.BankingInfo, InfoHelper.GetUserBankDetailsSave(), new { @class = "form-control col-md-8", @id = "AddNewBankDetailsList", @onchange = "AddBankDetailsToThing();" })
+
+
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.Label("Select Payment Method", new { @class = "control-label col-md-1 labelr lable" })
+                <div class="col-md-2" style="left: 224px; width: 684px;">
+                    @Html.DropDownListFor(model => model.bankingDetails.BankId, InfoHelper.GetBanks(), "--Type--", new { @class = "form-control col-md-8", @id = "BankId", @onchange = "SearchDepartment();" })
+
+
+                </div>
+            </div>
+            <div class="form-group" hidden>
+                @Html.LabelFor(model => model.BankingInfo, htmlAttributes: new { @class = "control-label col-md-2 lable" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.BankingInfo, new { htmlAttributes = new { @class = "form-control", @id = "BanksinfoID" } })
+                    @Html.ValidationMessageFor(model => model.BankingInfo, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.bankingDetails.CardNo, htmlAttributes: new { @class = "control-label col-md-2 lable" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.bankingDetails.CardNo, new { htmlAttributes = new { @class = "form-control", @id = "Cardnos" } })
+                    @Html.ValidationMessageFor(model => model.bankingDetails.CardNo, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.bankingDetails.CCV, htmlAttributes: new { @class = "control-label col-md-2 lable" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.bankingDetails.CCV, new { htmlAttributes = new { @class = "form-control", @id = "CCVS" } })
+                    @Html.ValidationMessageFor(model => model.bankingDetails.CCV, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.bankingDetails.ExpDate, htmlAttributes: new { @class = "control-label col-md-2 lable" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.bankingDetails.ExpDate, new { htmlAttributes = new { @class = "form-control datepicker ", @id = "expDate" } })
+                    @Html.ValidationMessageFor(model => model.bankingDetails.ExpDate, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+
+
+
+        </div>
+
+
+
+
+    </div>
+
+    <br />
+    <br />
+
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Pay" class="btn btn-default" />
+        </div>
+    </div>
+
+
+}
